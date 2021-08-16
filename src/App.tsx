@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, FunctionComponent } from "react";
 import "./index.css";
 
 function App() {
@@ -8,13 +7,14 @@ function App() {
   const [pokemons, setPokemons] = useState(pokedex);
   const [search, setSearch] = useState("");
 
-  // We define what's a Pokemon to fetch data from the global pokemon list
+  // Alors, tout ce qui va être type / interface / enum, à ta place
+  // je les mettrais dans un dossier models avec 1 ou plusieurs fichiers selon le besoin.
   type Pokemon = {
     name: string;
     url: string;
   };
 
-  // We define what's a type is for pokemon's types
+  
   type Type = {
     slot: number;
     type: {
@@ -23,7 +23,7 @@ function App() {
     };
   };
 
-  // We define what's a Pokemon in detail
+  
   type PokemonDetail = {
     name: string;
     id: number;
@@ -33,18 +33,27 @@ function App() {
     image: string;
   };
 
+  // La place de ta méthode n'est pas ici. Attention, les majuscules en DÉBUT de nom sont UNIQUEMENT
+  // pour le nom des Component comprenant du JSX. Tout ce qui va être considéré comme autre chose doit impérativement commencer par une minuscule.
   const ApiAllPokemon = () => {
-    // Use a React Hook with effect
-    // We can execute UseEffect only one time if [] in the dependance array or many time depending of what we put inside
+    // ta méthode apiAllPokemon est intéressante mais beaucoup trop longue.
+    // Afin de faciliter la lecture, je t'encourage à découper cette méthode :
+      // D'une part, tu vas avoir une première méthode asynchrone fetchAllPokemons()
+      // Cette méthode va ensuite appeler une seconde méthode : fetchAllPokemonDetails(pokemon) où l'argument
+      // pokemon entre parenthèse va être ton "element".
+      // En pratique, ça signifie que tu auras ton data.results.forEach((element: Pokemon) => fetchAllPokemonDetails(element))
     useEffect(() => {
       // GET request using fetch inside useEffect React hook
       fetch("https://pokeapi.co/api/v2/pokemon?limit=151")
         .then((response) => response.json())
         .then((data) => {
+          // Evite les any le plus possible. A prioi c'est quasiment interdit (officieusement). un any ça veut dire : je sais pas trop
           const newPokedex: any = [];
           // Fetch data for each pokemon
           data.results.forEach((element: Pokemon) => {
-            fetch("https://pokeapi.co/api/v2/pokemon/" + element.name)
+            // en ES6++ tu peux utiliser ce qu'on appelle les string literals (interpolation) je te montre un exemple
+            // ci dessous :
+            fetch(`https://pokeapi.co/api/v2/pokemon/${element.name}`)
               .then((response) => response.json())
               .then((result) => {
                 const poke: PokemonDetail = {
@@ -56,15 +65,20 @@ function App() {
                   image: result.sprites["front_default"]
                 };
                 newPokedex.push(poke);
+                // je vois que tu as setPokedex ET setPokemons qui font exactement la même chose
+                // à mon avis, un seul est suffisant.
                 setPokedex([...newPokedex]);
                 setPokemons([...newPokedex]);
               });
           });
         });
-      // Get all the possible types as well
+
+      // Cette partie là où tu récupères la liste des types peut se trouver dans un autre fichier (comme toutes tes méthodes asynchrones jusqu'ici)
+      // Tu peux lui donner un nom comme : fetchAllTypes() et ensuite l'appeler directement dans ton useEffect
       fetch("https://pokeapi.co/api/v2/type")
         .then((response) => response.json())
         .then((data) => {
+          // setTypes(data.result); là, je ne connais pas le model de réponse que ça te renvoie mais à priori, je dirai que c'est un tableau de base
           setTypes([...data.results]);
         })
 
@@ -75,8 +89,17 @@ function App() {
     return pokedex;
   };
 
-  // Filter pokemon by their type
+  // Même commentaire ici : ceci n'est pas un Component avec du JSX donc utiliser une minuscule. De plus les méthodes (même que précédemment), 
+  // doivent être dans un fichier différent. Ne mélangeons pas logiques / rendering dans l'optique de faciliter la lecture.
+  // Je veux savoir où chercher quand ça déconne.
   const FilterByType = (pokedex: PokemonDetail[], type: string) => {
+    // Cette partie est probablement la seule qui me pose véritablement un problème et ce que tu as le moins bien réussi.
+    // C'est normal, c'était le but de ma demande.
+    // essaye de regarder la méthode : filter en Javascript. Le problème que tu rencontres ici selon ta méthode :
+    // Si je ne met pas de type, je garde tout
+    // Sinon, tu vas recréer / modifier un tableau. 
+    // Tu pourrais juste grâce à un filter t'épargner toute logique superflue et ça te retournerai une copie de ton tableau qui répondrait
+    // à ta condition. Plus rapide et plus performant :) 
     setPokedex(pokemons);
     var newPokedex: PokemonDetail[] = [];
     if (type === "") {
@@ -96,10 +119,19 @@ function App() {
     return newPokedex;
   };
 
-  // Title component H1
-  const Title = (props: { title: string }) => {
-    return <h1 className="red"> {props.title}</h1>;
-  };
+
+  // Ce commentaire s'applique à TOUS tes Components ci dessous :
+  // Chaque component doit avoir une interface Props qui reprend ce que tu fais entre tes accolades pour les typer
+  // Chacun de tes component sont à priori des FunctionalComponent (typescript/react) qui vont prendre une interface pour les typer
+  // je te corrige le premier et je te laisse te renseigner sur pourquoi/comment pour les suivants
+  // Je termine avec un petit : 1 fichier par Component et donc du coup, avoir un dossier : components dans lequel se trouve tout, c'est plutôt une bonne pratique
+  interface TitleProps {
+    title: string;
+  }
+
+  const Title: FunctionComponent<TitleProps> = ({ title }: TitleProps) =>  (
+    <h1 className="red"> {title}</h1>
+  );
 
   // Pokemon item
   const DisplayPokemon = (props: { pokemon: PokemonDetail; action: any }) => {
@@ -187,6 +219,9 @@ function App() {
 
   // Searchbar handler to fix what we write in the sidebar
   // [BUG] without i can't see what i'm writting but with i have to stop on every letter [BUG]
+  // Ce n'est pas un bug, c'est un comportement normal
+  // De plus, si ça bug, c'est qu'il faut éviter de faire des call trop rapide. Tu peux par exemple mettre un delay sur l'appel (et attendre quelques secondes)
+  // afin d'avoir plusieurs lettres avant d'appeler l'api. (c'est une idée)
   const handleChange = (event: any) => {
     setSearch(event.target.value);
   };
@@ -195,7 +230,6 @@ function App() {
     handleChange(event);
     let value = event.target.value.toLowerCase();
     let result = [];
-    console.log(value);
     result = pokemons.filter((data: PokemonDetail) => {
       return data.name.search(value) !== -1;
     });
