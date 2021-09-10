@@ -1,5 +1,5 @@
-import {Pokemon} from "../../application/models/pokemon";
-import {PokemonDetail} from "../../application/models/pokemon_detail";
+import {Pokemon} from "../models/pokemon";
+import {PokemonDetail} from "../models/pokemon_detail";
 
 export const fetchAllPokemons = async () => {
     let arrayPokemon: Pokemon[] = []

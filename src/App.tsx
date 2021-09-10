@@ -1,8 +1,8 @@
 import './App.css';
-import {fetchAllPokemons, fetchOnePokemon} from "./infrastructure/api/api";
+import {fetchAllPokemons, fetchOnePokemon} from "./application/api/api";
 import {useEffect, useState} from "react";
 import {PokemonDetail} from "./application/models/pokemon_detail";
-import {ListPokemon} from "./infrastructure/components/list/listPokemon";
+import {ListPokemon} from "./application/components/list/listPokemon";
 
 function App() {
     // When the composant as load, fetch all pokemons, get the url of each and fetch each pokemon's information
