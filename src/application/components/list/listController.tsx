@@ -11,5 +11,10 @@ export const usePokemonPopup = () => {
         setPokemonToShow(pokemon)
     }
 
-    return {handleClick, pokemonToShow, isActive}
+    const handlePopup = () => {
+        setIsActive(!isActive)
+        setPokemonToShow(null)
+    }
+
+    return {handleClick,pokemonToShow, isActive,setIsActive, handlePopup}
 }

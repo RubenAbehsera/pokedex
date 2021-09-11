@@ -3,6 +3,7 @@ import {PokemonDetail} from "../../models/pokemon_detail";
 import {PopupPokemon} from "../popup/popup";
 import {CardPokemon} from "../card/cardPokemon";
 import {usePokemonPopup} from "./listController";
+import "./list.css"
 
 interface listPokemonProps {
     pokemons: PokemonDetail[];
@@ -10,24 +11,22 @@ interface listPokemonProps {
 }
 
 export const  ListPokemon: FunctionComponent<listPokemonProps> = ({ pokemons }: listPokemonProps) => {
-const {handleClick, pokemonToShow, isActive} = usePokemonPopup()
+const {handleClick, pokemonToShow, isActive, handlePopup} = usePokemonPopup()
 
     return(
-    <div className={"PokemonContainer"}>
-        <ul>
+    <div className={"cards-list"}>
             {pokemons.map((pokemon: PokemonDetail, index: number) => {
                 return (
-                    <li
+                    <div
                         key={index}
                         onClick={()=>{
                             handleClick(pokemon)
                         }
                         }>
                         <CardPokemon pokemon={pokemon}/>
-                    </li>
+                    </div>
                 )
             })}
-        </ul>
-        <PopupPokemon pokemon={pokemonToShow} state={isActive}/>
+        <PopupPokemon action={handlePopup} pokemon={pokemonToShow} state={isActive}/>
     </div>)
 };
