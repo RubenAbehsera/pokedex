@@ -30,6 +30,14 @@
     box-shadow: 5px 5px 30px 7px rgba(0,0,0,0.25), -5px -5px 30px 7px rgba(0,0,0,0.22);
 }
 
+@media screen and (max-width: 800px) {
+    .popup__informations{
+        width: 80%;
+        top: 50px;
+    }
+}
+
+
 .popup__informations h2 {
     font-size: 40px;
     padding-top: 24px;
