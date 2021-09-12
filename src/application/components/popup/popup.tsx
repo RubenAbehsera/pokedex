@@ -13,7 +13,7 @@ export const PopupPokemon: FunctionComponent<popupProps> = ({pokemon, state,acti
     return (
         <div
             className={state ? "popup visibile" :  "hidden"} onClick={action}>
-            <div className={"popup_informations"} >
+            <div className={"popup__informations"} >
                 <h2>Id: {pokemon?.id}</h2>
                 <img src={pokemon?.image} alt={pokemon?.name}/>
                 <div className={"types"}>
@@ -24,6 +24,10 @@ export const PopupPokemon: FunctionComponent<popupProps> = ({pokemon, state,acti
                             </div>
                         )
                     })}
+                </div>
+                <div>
+                    <p>Height : {pokemon?.height}</p>
+                    <p>Weight : {pokemon?.weight}</p>
                 </div>
                 <h3>{ucfirst(pokemon?.name)}</h3>
             </div>

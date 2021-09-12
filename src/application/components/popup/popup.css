@@ -13,9 +13,10 @@
     height: 100vh;
     backdrop-filter: blur(10px);
     position: fixed;
+
 }
 
-.popup_informations{
+.popup__informations{
     position: relative;
     top: 200px;
     width: 40%;
@@ -25,17 +26,19 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    border-radius: 40px;
+    box-shadow: 5px 5px 30px 7px rgba(0,0,0,0.25), -5px -5px 30px 7px rgba(0,0,0,0.22);
 }
 
-.popup_informations h2 {
+.popup__informations h2 {
     font-size: 40px;
     padding-top: 24px;
 }
 
-.popup_informations img {
+.popup__informations img {
     width: 250px;
 }
 
-.popup_informations h3 {
+.popup__informations h3 {
     font-size: 32px;
 }
