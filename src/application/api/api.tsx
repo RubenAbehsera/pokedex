@@ -33,3 +33,4 @@ export const fetchOnePokemon = async (pokemon : Pokemon) => {
     return pokemenDetails
 }
 
+

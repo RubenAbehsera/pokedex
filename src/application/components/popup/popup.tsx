@@ -16,6 +16,15 @@ export const PopupPokemon: FunctionComponent<popupProps> = ({pokemon, state,acti
             <div className={"popup_informations"} >
                 <h2>Id: {pokemon?.id}</h2>
                 <img src={pokemon?.image} alt={pokemon?.name}/>
+                <div className={"types"}>
+                    {pokemon?.types.map((type)=>{
+                        return(
+                            <div className={`type ${type.type.name}`}>
+                                <p>{type.type.name}</p>
+                            </div>
+                        )
+                    })}
+                </div>
                 <h3>{ucfirst(pokemon?.name)}</h3>
             </div>
         </div>
