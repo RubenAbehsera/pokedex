@@ -3,6 +3,7 @@ import {fetchAllPokemons, fetchOnePokemon} from "./application/api/api";
 import {useEffect, useState} from "react";
 import {PokemonDetail} from "./application/models/pokemon_detail";
 import {ListPokemon} from "./application/components/list/listPokemon";
+import {FilterPokemon} from "./application/components/filter/filter";
 
 function App() {
     // When the composant as load, fetch all pokemons, get the url of each and fetch each pokemon's information
@@ -18,7 +19,8 @@ function App() {
 
     return (
         <div className="App">
-                <ListPokemon pokemons={pokedex}/>
+            <FilterPokemon/>
+            <ListPokemon pokemons={pokedex}/>
         </div>
     );
 }
